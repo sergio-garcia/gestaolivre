@@ -5,7 +5,7 @@ from __future__ import absolute_import
 
 from os import environ
 
-from .base import *
+from .base import *  # NOQA
 
 # Normally you should not import ANYTHING from Django directly
 # into your settings, but ImproperlyConfigured is an exception.
@@ -20,12 +20,12 @@ def get_env_setting(setting):
         error_msg = "Set the %s env variable" % setting
         raise ImproperlyConfigured(error_msg)
 
-########## HOST CONFIGURATION
+# ######### HOST CONFIGURATION
 # See: https://docs.djangoproject.com/en/1.9/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = ['.ginx.com.br']
-########## END HOST CONFIGURATION
+# ######### END HOST CONFIGURATION
 
-########## EMAIL CONFIGURATION
+# ######### EMAIL CONFIGURATION
 # See: https://docs.djangoproject.com/en/1.9/ref/settings/#email-backend
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
@@ -49,9 +49,9 @@ EMAIL_USE_TLS = True
 
 # See: https://docs.djangoproject.com/en/1.9/ref/settings/#server-email
 SERVER_EMAIL = EMAIL_HOST_USER
-########## END EMAIL CONFIGURATION
+# ######### END EMAIL CONFIGURATION
 
-########## DATABASE CONFIGURATION
+# ######### DATABASE CONFIGURATION
 # See: https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 DATABASES = {
     'default': {
@@ -63,16 +63,16 @@ DATABASES = {
         'PORT': get_env_setting('DATABASE_PORT'),
     }
 }
-########## END DATABASE CONFIGURATION
+# ######### END DATABASE CONFIGURATION
 
 
-########## CACHE CONFIGURATION
+# ######### CACHE CONFIGURATION
 # See: https://docs.djangoproject.com/en/1.9/ref/settings/#caches
-#CACHES = {}
-########## END CACHE CONFIGURATION
+# CACHES = {}
+# ######### END CACHE CONFIGURATION
 
 
-########## SECRET CONFIGURATION
+# ######### SECRET CONFIGURATION
 # See: https://docs.djangoproject.com/en/1.9/ref/settings/#secret-key
 SECRET_KEY = get_env_setting('SECRET_KEY')
-########## END SECRET CONFIGURATION
+# ######### END SECRET CONFIGURATION
