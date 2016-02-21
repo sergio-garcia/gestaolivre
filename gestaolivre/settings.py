@@ -27,8 +27,9 @@ class Common(Configuration):
         ('Sergio Garcia', 'sergio@gestaolivre.org'),
     ))
     DATABASES = values.DatabaseURLValue('postgres://postgres@db/postgres')
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     CACHES = values.CacheURLValue('locmem://')
+    EMAIL = values.EmailURLValue('console://')
+    EMAIL_SUBJECT_PREFIX = values.Value('[%s] ' % SITE_NAME)
     TIME_ZONE = values.Value('America/Sao_Paulo')
     LANGUAGE_CODE = values.Value('pt-br')
     USE_I18N = values.BooleanValue(True)
@@ -36,17 +37,17 @@ class Common(Configuration):
     USE_TZ = values.BooleanValue(True)
     MEDIA_ROOT = normpath(join(SITE_ROOT, 'media'))
     MEDIA_URL = values.Value('/media/')
-    STATIC_ROOT = normpath(join(SITE_ROOT, 'assets'))
+    STATIC_ROOT = values.PathValue(normpath(join(SITE_ROOT, 'assets')))
     STATIC_URL = values.Value('/assets/')
     STATICFILES_DIRS = (
         normpath(join(SITE_ROOT, 'bower_components')),
         normpath(join(SITE_ROOT, 'static')),
     )
-    STATICFILES_FINDERS = values.BackendsValue((
+    STATICFILES_FINDERS = [
         'django.contrib.staticfiles.finders.FileSystemFinder',
         'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    ))
-    SECRET_KEY = '(ec65w1as3rno#!g#e*4wji!m*6#$=6v5d-bs--%jax(7o_y6$'
+    ]
+    SECRET_KEY = values.SecretValue()
     ALLOWED_HOSTS = []
     FIXTURE_DIRS = (
         normpath(join(SITE_ROOT, 'fixtures')),
@@ -73,7 +74,7 @@ class Common(Configuration):
             },
         },
     ]
-    MIDDLEWARE_CLASSES = values.BackendsValue([
+    MIDDLEWARE_CLASSES = [
         'corsheaders.middleware.CorsMiddleware',
         'django.middleware.security.SecurityMiddleware',
         'django.middleware.common.CommonMiddleware',
@@ -84,8 +85,8 @@ class Common(Configuration):
         'django.contrib.messages.middleware.MessageMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
         'django.middleware.locale.LocaleMiddleware',
-        'gestaolivre.apps.core.middleware.GlobalRequestMiddleware',
-    ])
+        # 'gestaolivre.apps.core.middleware.GlobalRequestMiddleware',
+    ]
     ROOT_URLCONF = '%s.urls' % SITE_NAME
     DJANGO_APPS = (
         'django.contrib.auth',
@@ -179,12 +180,12 @@ class Dev(Common):
     u"""Configuração para Desenvolvimento."""
 
     DEBUG = True
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    SECRET_KEY = values.Value('(ec65w1as3rno#!g#e*4wji!m*6#$=6v5d-bs--%jax(7o_y6$')
 
 
 class Prod(Common):
     u"""Configuração para Produção."""
 
-    DEBUG = True
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-    SECRET_KEY = values.SecretValue()
+    DEBUG = False
+    EMAIL = values.EmailURLValue('smtp://user@domain.com:pass@smtp.example.com:465/?ssl=True')
+    ALLOWED_HOSTS = ['.gestaolivre.org']

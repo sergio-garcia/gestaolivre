@@ -6,6 +6,8 @@ web:
   volumes:
     - .:/code
   ports:
-    - "8000:8000"
+    - "80:8000"
+  environment:
+    - DATABASE_URL=postgres://postgres@db:5432/postgres
   links:
     - db

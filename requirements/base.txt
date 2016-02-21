@@ -2,7 +2,13 @@
 
 # Latest Django
 Django==1.9.2
+
+# Configuration
 django-configurations==1.0
+dj-database-url==0.4.0
+dj-email-url==0.0.4
+django-cache-url==1.0.0
+
 
 # For the postgresql persistance stores
 psycopg2==2.6.1
