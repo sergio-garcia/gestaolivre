@@ -1,4 +1,4 @@
 [flake8]
-ignore =
+ignore = D203
 exclude = migrations
 max-line-length = 120

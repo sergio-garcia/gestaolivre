@@ -2,6 +2,7 @@
 
 # Latest Django
 Django==1.9.2
+django-configurations==1.0
 
 # For the postgresql persistance stores
 psycopg2==2.6.1

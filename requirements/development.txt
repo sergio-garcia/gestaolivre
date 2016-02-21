@@ -1,2 +1,9 @@
 # Local development dependencies go here
 -r base.txt
+
+flake8==2.5.4
+flake8-pep257==1.0.5
+mccabe==0.2.1
+pep257==0.7.0
+pep8==1.5.7
+pyflakes==0.8.1
