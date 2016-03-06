@@ -8,3 +8,4 @@ ADD ./requirements* /code/
 RUN pip install -r requirements.txt
 RUN pip install -r requirements/development.txt
 ADD . /code/
+# RUN python manage.py collectstatic

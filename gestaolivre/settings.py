@@ -16,7 +16,7 @@ SITE_ROOT = dirname(DJANGO_ROOT)
 SITE_NAME = basename(DJANGO_ROOT)
 
 
-class Common(Configuration):
+class Base(Configuration):
     u"""Configuração comum para todos os ambientes."""
 
     DEBUG = values.BooleanValue(False)
@@ -26,7 +26,7 @@ class Common(Configuration):
     MANAGERS = values.SingleNestedTupleValue((
         ('Sergio Garcia', 'sergio@gestaolivre.org'),
     ))
-    DATABASES = values.DatabaseURLValue('postgres://postgres@db/postgres')
+    DATABASES = values.DatabaseURLValue('postgres://postgres@localhost/postgres')
     CACHES = values.CacheURLValue('locmem://')
     EMAIL = values.EmailURLValue('console://')
     EMAIL_SUBJECT_PREFIX = values.Value('[%s] ' % SITE_NAME)
@@ -100,9 +100,10 @@ class Common(Configuration):
         'mptt',
         'django_mptt_admin',
         'widget_tweaks',
+        'brazil_fields'
     )
     LOCAL_APPS = (
-        # 'gestaolivre.apps.core',
+        'gestaolivre.apps.cadastro',
         # 'gestaolivre.apps.accounting',
         # 'gestaolivre.apps.br_accounting',
         # 'gestaolivre.apps.address',
@@ -141,7 +142,15 @@ class Common(Configuration):
         'corsheaders',
     )
     REST_FRAMEWORK = {
-        'PAGE_SIZE': 10
+        'PAGE_SIZE': 10,
+        'DEFAULT_PERMISSION_CLASSES': (
+            'rest_framework.permissions.IsAuthenticated',
+        ),
+        'DEFAULT_AUTHENTICATION_CLASSES': (
+            'rest_framework.authentication.SessionAuthentication',
+            'rest_framework.authentication.BasicAuthentication',
+            'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        ),
     }
     CORS_ORIGIN_ALLOW_ALL = True
     CORS_ALLOW_CREDENTIALS = True
@@ -161,31 +170,64 @@ class Common(Configuration):
     @classmethod
     def pre_setup(cls):
         u"""Executado antes da Configuração."""
-        super(Common, cls).pre_setup()
+        super(Base, cls).pre_setup()
 
     @classmethod
     def setup(cls):
         u"""Executado depois da Configuração."""
-        super(Common, cls).setup()
-        logging.info('Configurações de produção carregadas: %s', cls)
+        super(Base, cls).setup()
+        logging.info('Configurações comuns carregadas: %s', cls)
 
     @classmethod
     def post_setup(cls):
         u"""Executado depois da Configuração."""
-        super(Common, cls).post_setup()
+        super(Base, cls).post_setup()
         logging.debug("done setting up! \o/")
 
 
-class Dev(Common):
+class Dev(Base):
     u"""Configuração para Desenvolvimento."""
 
     DEBUG = True
+    DATABASES = values.DatabaseURLValue('postgres://postgres@localhost/postgres')
     SECRET_KEY = values.Value('(ec65w1as3rno#!g#e*4wji!m*6#$=6v5d-bs--%jax(7o_y6$')
 
+    @classmethod
+    def pre_setup(cls):
+        u"""Executado antes da Configuração."""
+        super(Base, cls).pre_setup()
 
-class Prod(Common):
+    @classmethod
+    def setup(cls):
+        u"""Executado depois da Configuração."""
+        super(Base, cls).setup()
+        logging.info('Configurações de desenvolvimento carregadas: %s', cls)
+
+    @classmethod
+    def post_setup(cls):
+        u"""Executado depois da Configuração."""
+        super(Base, cls).post_setup()
+
+
+class Prod(Base):
     u"""Configuração para Produção."""
 
     DEBUG = False
     EMAIL = values.EmailURLValue('smtp://user@domain.com:pass@smtp.example.com:465/?ssl=True')
     ALLOWED_HOSTS = ['.gestaolivre.org']
+
+    @classmethod
+    def pre_setup(cls):
+        u"""Executado antes da Configuração."""
+        super(Base, cls).pre_setup()
+
+    @classmethod
+    def setup(cls):
+        u"""Executado depois da Configuração."""
+        super(Base, cls).setup()
+        logging.info('Configurações de produção carregadas: %s', cls)
+
+    @classmethod
+    def post_setup(cls):
+        u"""Executado depois da Configuração."""
+        super(Base, cls).post_setup()

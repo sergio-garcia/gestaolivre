@@ -46,3 +46,9 @@ assets/
 
 # Python Environment
 .env/
+
+# Temporary Files
+tmp/
+
+# Build
+dist/

@@ -1,13 +1,35 @@
-db:
-  image: postgres
-web:
-  build: .
-  command: python manage.py runserver 0.0.0.0:8000
-  volumes:
-    - .:/code
-  ports:
-    - "80:8000"
-  environment:
-    - DATABASE_URL=postgres://postgres@db:5432/postgres
-  links:
-    - db
+version: '2'
+services:
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+  backend:
+    build:
+      context: .
+      dockerfile: Backend.Dockerfile
+    depends_on:
+      - db
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgres://postgres@db:5432/postgres
+    links:
+      - db
+  frontend:
+    build:
+      context: .
+      dockerfile: Frontend.Dockerfile
+    depends_on:
+      - backend
+    command: ng serve --proxy=http://backend:8000
+    volumes:
+      - .:/code
+    ports:
+      - "4200:4200"
+      - "49152:49152"
+    links:
+      - backend
