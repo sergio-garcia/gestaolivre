@@ -29,7 +29,7 @@ services:
     volumes:
       - .:/code
     ports:
-      - "4200:4200"
+      - "80:4200"
       - "49152:49152"
     links:
       - backend

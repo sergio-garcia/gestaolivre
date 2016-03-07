@@ -22,14 +22,14 @@ export class Login {
     let body = JSON.stringify({ username, password });
     this.http.post('/api/token-auth/', body, { headers: contentHeaders })
       .subscribe(
-      response => {
-        localStorage.setItem('id_token', response.json().token);
-        this.router.parent.navigateByUrl('/home');
-      },
-      error => {
-        alert(error.text());
-        console.log(error.text());
-      }
+        response => {
+          localStorage.setItem('id_token', response.json().token);
+          this.router.parent.navigateByUrl('/home');
+        },
+        error => {
+          alert(error.text());
+          console.log(error.text());
+        }
       );
   }
 

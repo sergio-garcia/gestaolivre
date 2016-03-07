@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 u"""Arquivo de configuração do Django."""
+import datetime
 import logging
 from os.path import abspath
 from os.path import basename
@@ -104,17 +105,6 @@ class Base(Configuration):
     )
     LOCAL_APPS = (
         'gestaolivre.apps.cadastro',
-        # 'gestaolivre.apps.accounting',
-        # 'gestaolivre.apps.br_accounting',
-        # 'gestaolivre.apps.address',
-        # 'gestaolivre.apps.banking',
-        # 'gestaolivre.apps.br_nfse',
-        # 'gestaolivre.apps.contact',
-        # 'gestaolivre.apps.dashboard',
-        # 'gestaolivre.apps.base',
-        # 'gestaolivre.apps.pessoa',
-        # 'gestaolivre.apps.empresa',
-        # 'gestaolivre.apps.enderecamento',
     )
     INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS
     LOGIN_REDIRECT_URL = '/'
@@ -138,22 +128,22 @@ class Base(Configuration):
     }
     INSTALLED_APPS += (
         'rest_framework',
-        'rest_framework.authtoken',
+        'rest_framework_jwt',
         'corsheaders',
     )
-    REST_FRAMEWORK = {
+    REST_FRAMEWORK = values.DictValue({
         'PAGE_SIZE': 10,
         'DEFAULT_PERMISSION_CLASSES': (
             'rest_framework.permissions.IsAuthenticated',
         ),
         'DEFAULT_AUTHENTICATION_CLASSES': (
-            'rest_framework.authentication.SessionAuthentication',
-            'rest_framework.authentication.BasicAuthentication',
+            # 'rest_framework.authentication.SessionAuthentication',
+            # 'rest_framework.authentication.BasicAuthentication',
             'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         ),
-    }
-    CORS_ORIGIN_ALLOW_ALL = True
-    CORS_ALLOW_CREDENTIALS = True
+    })
+    CORS_ORIGIN_ALLOW_ALL = values.Value(True)
+    CORS_ALLOW_CREDENTIALS = values.Value(True)
     INSTALLED_APPS += (
         'compressor',
     )
@@ -166,6 +156,10 @@ class Base(Configuration):
         ('text/x-sass', 'sass {infile} {outfile}'),
         ('text/x-scss', 'sass --scss {infile} {outfile}'),
     )
+    JWT_AUTH = values.DictValue({
+        'JWT_ALLOW_REFRESH': True,
+        'JWT_AUTH_HEADER_PREFIX': 'Bearer',
+    })
 
     @classmethod
     def pre_setup(cls):
@@ -191,6 +185,12 @@ class Dev(Base):
     DEBUG = True
     DATABASES = values.DatabaseURLValue('postgres://postgres@localhost/postgres')
     SECRET_KEY = values.Value('(ec65w1as3rno#!g#e*4wji!m*6#$=6v5d-bs--%jax(7o_y6$')
+    JWT_AUTH = values.DictValue({
+        'JWT_EXPIRATION_DELTA': datetime.timedelta(hours=1),
+        'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(hours=1),
+        'JWT_ALLOW_REFRESH': True,
+        'JWT_AUTH_HEADER_PREFIX': 'Bearer',
+    })
 
     @classmethod
     def pre_setup(cls):

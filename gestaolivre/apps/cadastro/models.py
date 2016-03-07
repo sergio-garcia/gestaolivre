@@ -46,6 +46,10 @@ class Empresa(BaseModel):
     u"""Modelo abstrato especifico de uma empresa do Gestão Livre."""
 
     cnpj = CNPJField()
+    razao_social = models.CharField(verbose_name='razão social',
+                                    max_length=200)
+    nome_fantasia = models.CharField(verbose_name='nome fantasia',
+                                     max_length=100)
 
     class Meta(object):
         verbose_name = 'empresa'
